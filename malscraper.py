@@ -73,7 +73,11 @@ def scrape_page(resp, conn):
         except Exception:
             end_date = None
         # print(num_votes)
-        score = anime.find_all("span", attrs={"class": "text on"})[0].contents[0]
+        try:
+            score = anime.find_all("span", attrs={"class": "text on"})[0].contents[0]
+        except Exception:
+            score = None
+            pass
         # print(score)
         anime_id = anime_id.replace("area", "")
         # print(anime_id)
@@ -83,9 +87,10 @@ def scrape_page(resp, conn):
         c.execute(q)
     conn.commit()
 
-for i in range(0, 14000, 50):
+
+for i in range(12550, 14000, 50):
     print(i)
     headers = {'User-Agent': 'Mozilla/5.0 (X11; Fedora; Linux x86_64; rv:57.0) Gecko/20100101 Firefox/57.0'}
-    resp = requests.get("https://myanimelist.net/topanime.php?limit="+str(i), headers = headers)
+    resp = requests.get("https://myanimelist.net/topanime.php?limit="+str(i), headers=headers)
     scrape_page(resp, conn)
     time.sleep(3)
